@@ -2,10 +2,7 @@ package fr.alex6.discord.cmx;
 
 import net.dv8tion.jda.api.Permission;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * A method annotation to register a command inside a {@link CommandModule} class, this annotation takes the following arguments
@@ -18,6 +15,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Documented
 public @interface Command {
     String value();
     String[] aliases() default {};

@@ -1,5 +1,13 @@
 package fr.alex6.discord.cmx;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fr.alex6.discord.cmx.jackson.ColorJsonDeserializer;
+import fr.alex6.discord.cmx.jackson.ColorJsonSerializer;
+import fr.alex6.discord.cmx.jackson.HololiveChannelJsonDeserializer;
+import fr.alex6.discord.cmx.jackson.HololiveChannelJsonSerializer;
+import fr.alex6.discord.takobonker.HololiveChannel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -8,11 +16,15 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 
 /**
@@ -24,6 +36,9 @@ public class CommandManager extends ListenerAdapter {
     private final List<CommandModule> modules = new ArrayList<>();
     private final Map<String, CommandInfo> commands = new HashMap<>();
     private final String prefix;
+    private final ScheduledExecutorService scheduledExecutorService;
+    private final CacheManager cacheManager;
+    private final ObjectMapper objectMapper;
 
     /**
      * Create a new instance of CommandManager with the selected prefix
@@ -33,10 +48,28 @@ public class CommandManager extends ListenerAdapter {
         Objects.requireNonNull(prefix);
         if (prefix.equals("")) throw new NullPointerException("Prefix should not be empty");
         this.prefix = prefix;
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        registerCustomJacksonModules(objectMapper);
+        this.objectMapper = objectMapper;
+        this.cacheManager = new CacheManager(this.objectMapper);
     }
 
     private BiConsumer<MessageReceivedEvent, Permission[]> permissionsErrorHandler = (messageReceivedEvent, permissions) -> messageReceivedEvent.getMessage().reply(":x: Missing permissions: "+ Arrays.toString(permissions)).queue();
     private BiConsumer<MessageReceivedEvent, Throwable> runtimeErrorHandler = (messageReceivedEvent, throwable) -> messageReceivedEvent.getMessage().reply(":x: An error occurred: "+throwable.getMessage()).queue();
+
+    private void registerCustomJacksonModules(ObjectMapper objectMapper) {
+        SimpleModule awtModule = new SimpleModule("AWT Module");
+        awtModule.addSerializer(Color.class, new ColorJsonSerializer());
+        awtModule.addDeserializer(Color.class, new ColorJsonDeserializer());
+
+        SimpleModule hololiveModule = new SimpleModule("Hololive Module");
+        hololiveModule.addSerializer(HololiveChannel.class, new HololiveChannelJsonSerializer());
+        hololiveModule.addDeserializer(HololiveChannel.class, new HololiveChannelJsonDeserializer());
+
+        objectMapper.registerModules(awtModule, hololiveModule);
+    }
 
     /**
      * Register a new command module to the manager, all method annotated with the <code>@{@link Command}</code> annotation will be mapped
@@ -48,8 +81,15 @@ public class CommandManager extends ListenerAdapter {
         Objects.requireNonNull(module);
         mapCommands(module);
         modules.add(module);
+        module.onRegister();
+        module.registerTasks(scheduledExecutorService);
     }
 
+    public void registerModules(@NotNull CommandModule... modules) {
+        for (CommandModule module : modules) {
+            registerModule(module);
+        }
+    }
 
     /**
      * Return an immutable list of all modules
@@ -91,12 +131,12 @@ public class CommandManager extends ListenerAdapter {
 
     private void mapCommands(@NotNull CommandModule module) {
         for (Method method : module.getClass().getMethods()) {
-            if (method.isAccessible() && method.isAnnotationPresent(Command.class)) {
+            if (method.isAnnotationPresent(Command.class)) {
                 Command command = method.getAnnotation(Command.class);
                 if (commands.containsKey(command.value())) throw new IllegalArgumentException("Duplicated command: Command "+command.value()+" is already mapped");
                 commands.put(command.value(), new CommandInfo(command, method, module));
                 for (String alias : command.aliases()) {
-                    if (commands.containsKey(command.value())) throw new IllegalArgumentException("Duplicated command: Alias "+command.value()+" is already mapped");
+                    if (commands.containsKey(alias)) throw new IllegalArgumentException("Duplicated command: Alias "+command.value()+" is already mapped");
                     commands.put(alias, new CommandInfo(command, method, module));
                 }
             }
@@ -108,7 +148,6 @@ public class CommandManager extends ListenerAdapter {
         if (event.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if (event.getMessage().getContentRaw().startsWith(prefix)) {
             String command = event.getMessage().getContentRaw().substring(prefix.length()).split(" ")[0];
-            System.out.println(commands);
             String[] args = event.getMessage().getContentRaw().split(" ", 2).length == 1 ? new String[0] : event.getMessage().getContentRaw().split(" ", 2)[1].split(" ");
             if (commands.containsKey(command)) {
                 CommandInfo commandInfo = commands.get(command);
@@ -139,6 +178,8 @@ public class CommandManager extends ListenerAdapter {
                     else if (parameters[i].getType() == Message.class) values[i] = event.getMessage();
                     else if (parameters[i].getType() == JDA.class) values[i] = event.getJDA();
                     else if (parameters[i].getType() == ShardManager.class) values[i] = event.getJDA().getShardManager();
+                    else if (parameters[i].getType() == CacheManager.class) values[i] = cacheManager;
+                    else if (parameters[i].getType() == ObjectMapper.class) values[i] = objectMapper;
                     else if (parameters[i].getType() == Boolean.class) {
                         if (parameters[i].getName().equals("private")) values[i] = event.getTextChannel() instanceof PrivateChannel;
                         else if (parameters[i].getName().equals("bot")) values[i] = event.getAuthor().isBot();
@@ -148,11 +189,11 @@ public class CommandManager extends ListenerAdapter {
                 }
                 try {
                     method.invoke(commandInfo.getModule(), values);
-                } catch (IllegalAccessException | InvocationTargetException e) {
+                } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                    runtimeErrorHandler.accept(event, e);
+                } catch (InvocationTargetException e) {
+                    e.getTargetException().printStackTrace();
+                    runtimeErrorHandler.accept(event, e.getTargetException());
                 }
             }
         }
