@@ -66,7 +66,7 @@ public class ScheduleCommands extends CommandModule {
                 }
                 if (date.isEqual(now) || date.isAfter(now)) {
                     for (Element thumbnail : container.getElementsByClass("thumbnail")) {
-                        if (!thumbnail.attr("href").contains("youtube.com")) continue;
+                        if (!thumbnail.attr("href").contains("youtube.com") || thumbnail.getElementsByClass("datetime").size() == 0) continue;
                         LocalTime time = LocalTime.parse(thumbnail.getElementsByClass("datetime").get(0).ownText(), HOLODULE_TIME_FORMAT);
                         if (date.atTime(time).isBefore(LocalDateTime.now()) && !thumbnail.attr("style").contains("red")) continue;
                         UpcomingStream upcomingStream = new UpcomingStream();
@@ -152,6 +152,7 @@ public class ScheduleCommands extends CommandModule {
                 upcomingStreams = getUpcomingStreams(cacheManager, "");
             }
         } catch (HttpStatusException e) {
+            System.out.println();
             message.reply(":x: Unknown route \""+args[0]+"\"").queue();
             return;
         }
