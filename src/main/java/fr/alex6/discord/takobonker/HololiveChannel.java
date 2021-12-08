@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 
 @SuppressWarnings("unused")
 public class HololiveChannel {
-    // TODO: Change for DB storing
+    // TODO: Change for json storing
     // EN Myth
     public static final HololiveChannel NINOMAE_INANIS = new HololiveChannel("Ninomae Ina'nis", "UCMwGHR0BTZuLsmjY_NT5Pwg", "\uD83D\uDC19", "", Color.decode("#62567E"));
     public static final HololiveChannel GAWR_GURA = new HololiveChannel("Gawr Gura", "UCoSrY_IQQVpmIRZ9Xf-y93g", "\uD83D\uDD31", "", Color.decode("#5D81C7"));
@@ -60,6 +60,12 @@ public class HololiveChannel {
     public static final HololiveChannel MOMOSUZU_NENE = new HololiveChannel("Momosuzu Nene", "UCAWSyEs_Io8MtpY3m-zqILA", "", "", Color.decode("#eeac5e"));
     public static final HololiveChannel SHISHIRO_BOTAN = new HololiveChannel("Shishiro Botan", "UCUKD-uaobj9jiqB-VXt71mA", "", "", Color.decode("#a2d5c4"));
     public static final HololiveChannel OMARU_POLKA = new HololiveChannel("Omaru Polka", "UCK9V2B22uJYu3N7eR_BT9QA", "", "", Color.decode("#b92731"));
+    // JP Gen 6 (HoloX)
+    public static final HololiveChannel LAPLUS_DARKNESS = new HololiveChannel("La+ Darkness", "UCENwRMx5Yh42zWpzURebzTw", "", "", Color.decode("#351e3b"));
+    public static final HololiveChannel TAKANE_LUI = new HololiveChannel("Takane Lui", "UCs9_O1tRPMQTHQ-N_L6FU2g", "", "", Color.decode("#b84a67"));
+    public static final HololiveChannel HAKUI_KOYORI = new HololiveChannel("Hakui_Koyori", "UC6eWCld0KwmyHFbAqK3V-Rw", "", "", Color.decode("#f09cc0"));
+    public static final HololiveChannel SAKAMATA_CHLOE = new HololiveChannel("Sakamata Chloe", "UCIBY1ollUsauvVi4hW4cumw", "", "", Color.decode("#921a1b"));
+    public static final HololiveChannel KAZAMA_IROHA = new HololiveChannel("Kazama Iroha", "UC_vMYWcDjmfdpH6r4TTn1MQ", "", "", Color.decode("#73b5b1"));
     // Holostars Gen 1
     public static final HololiveChannel HANASAKI_MIYABI = new HololiveChannel("Hanasaki Miyabi", "UC6t3-_N8A6ME1JShZHHqOMw", "", "", Color.decode("#ff2f3f"));
     public static final HololiveChannel KANADE_IZURU = new HololiveChannel("Kanade Izuru", "UCZgOv3YDEs-ZnZWDYVwJdmA", "", "", Color.decode("#1f2f8f"));
