@@ -1,7 +1,6 @@
-package fr.alex6.discord.cmx.jackson;
+package fr.alex6.discord.takobonker.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import fr.alex6.discord.takobonker.HololiveChannel;

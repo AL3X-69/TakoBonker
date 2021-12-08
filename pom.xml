@@ -57,5 +57,10 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.13.0</version>
         </dependency>
+        <dependency>
+            <groupId>fr.alex6.discord</groupId>
+            <artifactId>command-manager-x</artifactId>
+            <version>1.0.3</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package fr.alex6.discord.cmx.jackson;
+package fr.alex6.discord.takobonker.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -16,5 +16,10 @@ public class HololiveChannelJsonSerializer extends JsonSerializer<HololiveChanne
             return;
         }
         jsonGenerator.writeString(hololiveChannel.getId());
+    }
+
+    @Override
+    public Class<HololiveChannel> handledType() {
+        return HololiveChannel.class;
     }
 }
