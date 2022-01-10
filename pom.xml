@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.helger</groupId>
             <artifactId>ph-css</artifactId>
-            <version>6.4.0</version>
+            <version>6.4.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
