@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alex6
+ * Copyright 2022 Alex6
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class HololiveChannel {
     public static final HololiveChannel YOZORA_MEL = new HololiveChannel("Yozora Mel", "UCD8HOxPs4Xvsm8H0ZxXGiBw", "", "", Color.decode("#fed62a"));
     public static final HololiveChannel SHIRAKAMI_FUBUKI = new HololiveChannel("Shirakami Fubuki", "UCdn5BQ06XqgXoAxIhbqw5Rg", "", "", Color.decode("#43bfef"));
     public static final HololiveChannel NATSUIRO_MATSURI = new HololiveChannel("Natsuiro Matsuri", "UCQ0UDLQCjY0rmuxCDE38FGg", "", "", Color.decode("#fdab45"));
-    public static final HololiveChannel AKI_ROSENTHAL = new HololiveChannel("Aki Rosenthal", "UCFTLzh12_nrtzqBPsTCqenA", "", "", Color.decode("#000000")); // Awaiting scheduled stream
+    public static final HololiveChannel AKI_ROSENTHAL = new HololiveChannel("Aki Rosenthal", "UCFTLzh12_nrtzqBPsTCqenA", "", "", Color.decode("#4E7FFC"));
     public static final HololiveChannel AKAI_HAATO = new HololiveChannel("Akai Haato", "UC1CfXB_kRs3C-zaeTG3oGyg", "", "", Color.decode("#fe4872"));
     // JP Gen 2
     public static final HololiveChannel MINATO_AQUA = new HololiveChannel("Minato Aqua", "UC1opHUrw8rvnsadT-iGp7Cg", "", "", Color.decode("#e57cdd"));
@@ -89,10 +89,10 @@ public class HololiveChannel {
     public static final HololiveChannel RIKKAROID = new HololiveChannel("Rikkaroid", "UC9mf_ZVpouoILRY9NUIaK-w", "", "", Color.decode("#ffb7df"));
     // Holostars Gen 2
     public static final HololiveChannel ASTEL_LEDA = new HololiveChannel("Astel Leda", "UCNVEsYbiZjH5QLmGeSgTSzg", "", "", Color.decode("#0047ab"));
-    public static final HololiveChannel KISHIDO_TEMA = new HololiveChannel("Kishido Tema", "UCGNI4MENvnsymYjKiZwv9eg", "", "", Color.decode("#000000")); // Awaiting scheduled stream
+    public static final HololiveChannel KISHIDO_TEMA = new HololiveChannel("Kishido Tema", "UCGNI4MENvnsymYjKiZwv9eg", "", "", Color.decode("#FFD902"));
     public static final HololiveChannel YUKOKU_ROBERU = new HololiveChannel("Yukoku Roberu", "UCANDOlYTJT7N5jlRC3zfzVA", "\uD83C\uDF77", "", Color.decode("#ca5a00"));
     // Holostars Gen 3
-    public static final HololiveChannel KAGEYAMA_SHIEN = new HololiveChannel("Kageyama Shien", "UChSvpZYRPh0FvG4SJGSga3g", "", "", Color.decode("#000000")); // Awaiting scheduled stream
+    public static final HololiveChannel KAGEYAMA_SHIEN = new HololiveChannel("Kageyama Shien", "UChSvpZYRPh0FvG4SJGSga3g", "", "", Color.decode("#b481d0"));
     public static final HololiveChannel ARAGAMI_OGA = new HololiveChannel("Aragami Oga", "UCwL7dgTxKo8Y4RFIKWaf8gA", "", "", Color.decode("#d6f05b"));
     // ID Gen 1
     public static final HololiveChannel AYUNDA_RISU = new HololiveChannel("Ayunda Risu", "UCOyYb1c43VlX9rc_lT6NKQw", "", "", Color.decode("#ff4133"));

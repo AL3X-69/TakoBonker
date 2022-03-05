@@ -33,11 +33,6 @@
 
     <repositories>
         <repository>
-            <id>dv8tion</id>
-            <name>m2-dv8tion</name>
-            <url>https://m2.dv8tion.net/releases</url>
-        </repository>
-        <repository>
             <id>github</id>
             <url>https://maven.pkg.github.com/AL3X-69/CommandManagerX</url>
             <snapshots>
@@ -50,7 +45,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.4.0_352</version>
+            <version>5.0.0-alpha.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -100,9 +95,9 @@
             <version>${log4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>fr.alex6.discord</groupId>
-            <artifactId>command-manager-x</artifactId>
-            <version>1.0.3</version>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>2.4.0</version>
         </dependency>
     </dependencies>
 </project>

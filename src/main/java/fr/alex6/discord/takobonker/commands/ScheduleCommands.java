@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alex6
+ * Copyright 2022 Alex6
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,23 +22,28 @@ import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSDeclarationList;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.reader.CSSReaderDeclarationList;
-import fr.alex6.discord.cmx.CacheManager;
-import fr.alex6.discord.cmx.CachedResource;
-import fr.alex6.discord.cmx.Command;
-import fr.alex6.discord.cmx.CommandModule;
 import fr.alex6.discord.takobonker.HololiveChannel;
 import fr.alex6.discord.takobonker.commands.entities.UpcomingStream;
 import fr.alex6.discord.takobonker.http.HttpFactory;
+import fr.alex6.discord.takobonker.utils.CacheManager;
+import fr.alex6.discord.takobonker.utils.CachedResource;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.Component;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import org.jsoup.HttpStatusException;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.IOException;
@@ -53,20 +58,38 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ScheduleCommands extends CommandModule {
+public class ScheduleCommands extends ListenerAdapter {
     private static final DateTimeFormatter HOLODULE_DATE_FORMAT = new DateTimeFormatterBuilder()
             .appendPattern("MM/dd")
             .parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear())
             .toFormatter();
     private static final DateTimeFormatter HOLODULE_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    private static final Logger logger = LoggerFactory.getLogger(ScheduleCommands.class);
 
     private final List<HololiveChannel> channels = new ArrayList<>();
+    private final CacheManager cacheManager;
+
+    public ScheduleCommands(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+
+        for (Field field : HololiveChannel.class.getDeclaredFields()) {
+            int mod = field.getModifiers();
+            if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod) && field.getType() == HololiveChannel.class) {
+                try {
+                    HololiveChannel channel = (HololiveChannel) field.get(null);
+                    channels.add(channel);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     private String buildYoutubeUrl(String endpoint, String ids) {
         return String.format("/%s?key=%s&part=snippet&id=%s", endpoint, System.getProperty("youtube.key"), ids);
     }
 
-    private List<UpcomingStream> getUpcomingStreams(CacheManager cacheManager, String route) throws IOException {
+    private List<UpcomingStream> getUpcomingStreams(String route) throws IOException {
         String cacheName = route.equals("") ? "up-all" : "up-" + route.substring(1);
         CachedResource<UpcomingStream[]> cachedResource = cacheManager.getCachedResource(cacheName, UpcomingStream[].class);
         if (cachedResource == null || Duration.between(cachedResource.getCacheDateTime(), LocalDateTime.now()).getSeconds() > 300) {
@@ -151,71 +174,74 @@ public class ScheduleCommands extends CommandModule {
         return null;
     }
 
-    @Command(value = "upcoming", aliases = {"up"})
-    public void upcoming(TextChannel channel, String[] args, CacheManager cacheManager, Message message) throws IOException {
-        String[] routes = new String[] {"", "english", "indonesia", "innk", "china", "holostars", "hololive"};
-        message.addReaction("loading:906914357470961665").queue();
-        List<UpcomingStream> upcomingStreams;
-        try {
-            if (args.length > 0) {
-                if (!Arrays.asList(routes).contains(args[0])) {
-                    message.reply(":x: Unknown route \""+args[0]+"\"").queue();
-                    return;
-                }
-                upcomingStreams = getUpcomingStreams(cacheManager, "/" + args[0]);
 
-            } else {
-                upcomingStreams = getUpcomingStreams(cacheManager, "");
-            }
-        } catch (HttpStatusException e) {
-            System.out.println();
-            message.reply(":x: Unknown route \""+args[0]+"\"").queue();
-            return;
-        }
-        if (upcomingStreams.size() > 5) upcomingStreams = upcomingStreams.subList(0, 5);
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Next Hololive Upcoming Streams");
-        embedBuilder.setColor(Color.decode("#5fddef"));
-        StringBuilder builder = embedBuilder.getDescriptionBuilder();
-        List<Component> components = new LinkedList<>();
-        for (UpcomingStream upcomingStream : upcomingStreams) {
-            HololiveChannel hololiveChannel = upcomingStream.getChannel();
-            assert hololiveChannel != null;
-            builder.append(upcomingStream.isLive() ? "\uD83D\uDD34 **__ON AIR__ " : "⏲️ **").append(upcomingStream.getName()).append("** on [``").append(upcomingStream.getChannel().getName()).append("``](https://youtube.com/channel/").append(upcomingStream.getChannel().getId()).append(")'s channel ");
-            if (!upcomingStream.isLive()) builder.append("<t:").append(upcomingStream.getTime().toEpochSecond(ZoneOffset.UTC)).append(":R>");
-            if (upcomingStream.getParticipants().length > 1) {
-                builder.append("\n> With: ");
-                int c = 0;
-                for (UpcomingStream.Participant participant : upcomingStream.getParticipants()) {
-                    c++;
-                    builder.append(participant.getName());
-                    if (c < upcomingStream.getParticipants().length) builder.append(", ");
+    @Override
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+        if (event.getName().startsWith("up")) {
+            String[] routes = new String[] {"", "english", "indonesia", "innk", "china", "holostars", "hololive"};
+            InteractionHook hook = event.deferReply().complete();
+            List<UpcomingStream> upcomingStreams;
+            String route = event.getOption("route", OptionMapping::getAsString);
+            try {
+                if (route != null) {
+                    if (!Arrays.asList(routes).contains(route)) {
+                        hook.editOriginal(":x: Unknown route \""+route+"\"").queue();
+                        return;
+                    }
+                    upcomingStreams = getUpcomingStreams("/" + route);
+
+                } else {
+                    upcomingStreams = getUpcomingStreams("");
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                hook.editOriginal(":x: Unknown route \""+route+"\"").queue();
+                return;
             }
-            builder.append("\n\n");
-            Button button = Button.link(upcomingStream.getLink(), upcomingStream.getChannel().getName()+"'s live");
-            if (!upcomingStream.getChannel().getEmoji().equals("")) button = button.withEmoji(Emoji.fromUnicode(upcomingStream.getChannel().getEmoji()));
-            components.add(button);
+            boolean multiplePages = false;
+            if (upcomingStreams.size() > 5) {
+                upcomingStreams = upcomingStreams.subList(0, 5);
+                multiplePages = true;
+            }
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("Next Hololive Upcoming Streams");
+            embedBuilder.setColor(Color.decode("#5fddef"));
+            StringBuilder builder = embedBuilder.getDescriptionBuilder();
+            List<ItemComponent> components = new LinkedList<>();
+            for (UpcomingStream upcomingStream : upcomingStreams) {
+                HololiveChannel hololiveChannel = upcomingStream.getChannel();
+                assert hololiveChannel != null;
+                builder.append(upcomingStream.isLive() ? "\uD83D\uDD34 **__ON AIR__ " : "⏲️ **").append(upcomingStream.getName()).append("** on [``").append(upcomingStream.getChannel().getName()).append("``](https://youtube.com/channel/").append(upcomingStream.getChannel().getId()).append(")'s channel ");
+                if (!upcomingStream.isLive()) builder.append("<t:").append(upcomingStream.getTime().toEpochSecond(ZoneOffset.UTC)).append(":R>");
+                if (upcomingStream.getParticipants().length > 1) {
+                    builder.append("\n> With: ");
+                    int c = 0;
+                    for (UpcomingStream.Participant participant : upcomingStream.getParticipants()) {
+                        c++;
+                        builder.append(participant.getName());
+                        if (c < upcomingStream.getParticipants().length) builder.append(", ");
+                    }
+                }
+                builder.append("\n\n");
+                Button button = Button.link(upcomingStream.getLink(), upcomingStream.getChannel().getName()+"'s live");
+                if (!upcomingStream.getChannel().getEmoji().equals("")) button = button.withEmoji(Emoji.fromUnicode(upcomingStream.getChannel().getEmoji()));
+                components.add(button);
+            }
+            if (builder.length() == 0) builder.append(":x: No live scheduled");
+            WebhookMessageAction<Message> messageAction = hook.sendMessageEmbeds(embedBuilder.build());
+            if (multiplePages){
+                messageAction = messageAction.addActionRow(Button.primary("page_previous_1", "Previous page").asDisabled(), Button.primary("page_next_1", "Next Page"));
+            }
+            if (components.size() > 0) messageAction = messageAction.addActionRow(components);
+            messageAction.queue();
         }
-        if (builder.length() == 0) builder.append(":x: No live scheduled");
-        message.clearReactions().complete();
-        MessageAction messageAction = channel.sendMessageEmbeds(embedBuilder.build());
-        if (components.size() > 0) messageAction = messageAction.setActionRow(components);
-        messageAction.queue();
     }
 
     @Override
-    public void onRegister() {
-        for (Field field : HololiveChannel.class.getDeclaredFields()) {
-            int mod = field.getModifiers();
-            if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod) && field.getType() == HololiveChannel.class) {
-                try {
-                    HololiveChannel channel = (HololiveChannel) field.get(null);
-                    channels.add(channel);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        if (event.getComponentId().startsWith("page_previous_")) {
+            int n = Integer.parseInt(event.getComponentId().replace("page_previous_", ""));
+
         }
     }
 }
