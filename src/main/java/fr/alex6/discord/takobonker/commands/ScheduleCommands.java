@@ -30,14 +30,16 @@ import fr.alex6.discord.takobonker.utils.CachedResource;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
@@ -53,9 +55,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 public class ScheduleCommands extends ListenerAdapter {
@@ -228,9 +228,10 @@ public class ScheduleCommands extends ListenerAdapter {
                 components.add(button);
             }
             if (builder.length() == 0) builder.append(":x: No live scheduled");
+            if (multiplePages) embedBuilder.setFooter("Page 1/"+Math.ceil(upcomingStreams.size()/5.));
             WebhookMessageAction<Message> messageAction = hook.sendMessageEmbeds(embedBuilder.build());
             if (multiplePages){
-                messageAction = messageAction.addActionRow(Button.primary("page_previous_1", "Previous page").asDisabled(), Button.primary("page_next_1", "Next Page"));
+                messageAction = messageAction.addActionRow(Button.primary("page_previous_"+(route == null ? "" : route), "Previous page").asDisabled(), Button.primary("page_next_"+(route == null ? "" : route), "Next Page"));
             }
             if (components.size() > 0) messageAction = messageAction.addActionRow(components);
             messageAction.queue();
@@ -240,8 +241,118 @@ public class ScheduleCommands extends ListenerAdapter {
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         if (event.getComponentId().startsWith("page_previous_")) {
-            int n = Integer.parseInt(event.getComponentId().replace("page_previous_", ""));
+            MessageEmbed.Footer footer = event.getMessage().getEmbeds().get(0).getFooter();
+            if (footer == null) return;
+            String footerText = footer.getText();
+            if (footerText == null) return;
+            int n = Integer.parseInt(footerText.split("/")[0].replace("Page ", ""));
+            String route = event.getComponentId().replace("page_previous_", "");
+            event.editMessageEmbeds(buildLoadingEmbed()).queue();
 
+            List<UpcomingStream> upcomingStreams;
+            try {
+                upcomingStreams = getUpcomingStreams(route);
+            } catch (IOException e) {
+                e.printStackTrace();
+                event.getChannel().sendMessage("An error occured "+e.getMessage()).queue();
+                return;
+            }
+
+            int total = upcomingStreams.size();
+            upcomingStreams = upcomingStreams.subList((n-1)*5, n*5);
+
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("Next Hololive Upcoming Streams");
+            embedBuilder.setColor(Color.decode("#5fddef"));
+            StringBuilder builder = embedBuilder.getDescriptionBuilder();
+            List<ItemComponent> components = new LinkedList<>();
+            for (UpcomingStream upcomingStream : upcomingStreams) {
+                HololiveChannel hololiveChannel = upcomingStream.getChannel();
+                assert hololiveChannel != null;
+                builder.append(upcomingStream.isLive() ? "\uD83D\uDD34 **__ON AIR__ " : "⏲️ **").append(upcomingStream.getName()).append("** on [``").append(upcomingStream.getChannel().getName()).append("``](https://youtube.com/channel/").append(upcomingStream.getChannel().getId()).append(")'s channel ");
+                if (!upcomingStream.isLive()) builder.append("<t:").append(upcomingStream.getTime().toEpochSecond(ZoneOffset.UTC)).append(":R>");
+                if (upcomingStream.getParticipants().length > 1) {
+                    builder.append("\n> With: ");
+                    int c = 0;
+                    for (UpcomingStream.Participant participant : upcomingStream.getParticipants()) {
+                        c++;
+                        builder.append(participant.getName());
+                        if (c < upcomingStream.getParticipants().length) builder.append(", ");
+                    }
+                }
+                builder.append("\n\n");
+                Button button = Button.link(upcomingStream.getLink(), upcomingStream.getChannel().getName()+"'s live");
+                if (!upcomingStream.getChannel().getEmoji().equals("")) button = button.withEmoji(Emoji.fromUnicode(upcomingStream.getChannel().getEmoji()));
+                components.add(button);
+            }
+            if (builder.length() == 0) builder.append(":x: No live scheduled");
+            embedBuilder.setFooter(String.format("Page %s/%s", n-1, Math.ceil(total/5.)));
+            MessageAction messageAction = event.getMessage().editMessageEmbeds(embedBuilder.build());
+            Set<ActionRow> actionRows = new LinkedHashSet<>();
+            actionRows.add(ActionRow.of(Button.primary("page_previous_"+route, "Previous page").withDisabled(n<2), Button.primary("page_next_"+route, "Next Page")));
+            if (components.size() > 0) actionRows.add(ActionRow.of(components));
+            messageAction.setActionRows(actionRows).queue();
+        } else if (event.getComponentId().startsWith("page_next_")) {
+            MessageEmbed.Footer footer = event.getMessage().getEmbeds().get(0).getFooter();
+            if (footer == null) return;
+            String footerText = footer.getText();
+            if (footerText == null) return;
+            int n = Integer.parseInt(footerText.split("/")[0].replace("Page ", ""));
+            String route = event.getComponentId().replace("page_next_", "");
+            event.editMessageEmbeds(buildLoadingEmbed()).queue();
+
+            List<UpcomingStream> upcomingStreams;
+            try {
+                upcomingStreams = getUpcomingStreams(route.equals("") ? "" : "/"+route);
+            } catch (IOException e) {
+                e.printStackTrace();
+                event.getChannel().sendMessage("An error occured "+e.getMessage()).queue();
+                return;
+            }
+
+            int total = upcomingStreams.size();
+            upcomingStreams = upcomingStreams.subList(n*5, Math.min((n + 1) * 5, upcomingStreams.size()));
+
+            logger.debug(upcomingStreams.toString());
+
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("Next Hololive Upcoming Streams");
+            embedBuilder.setColor(Color.decode("#5fddef"));
+            StringBuilder builder = embedBuilder.getDescriptionBuilder();
+            List<ItemComponent> components = new LinkedList<>();
+            for (UpcomingStream upcomingStream : upcomingStreams) {
+                HololiveChannel hololiveChannel = upcomingStream.getChannel();
+                assert hololiveChannel != null;
+                builder.append(upcomingStream.isLive() ? "\uD83D\uDD34 **__ON AIR__ " : "⏲️ **").append(upcomingStream.getName()).append("** on [``").append(upcomingStream.getChannel().getName()).append("``](https://youtube.com/channel/").append(upcomingStream.getChannel().getId()).append(")'s channel ");
+                if (!upcomingStream.isLive()) builder.append("<t:").append(upcomingStream.getTime().toEpochSecond(ZoneOffset.UTC)).append(":R>");
+                if (upcomingStream.getParticipants().length > 1) {
+                    builder.append("\n> With: ");
+                    int c = 0;
+                    for (UpcomingStream.Participant participant : upcomingStream.getParticipants()) {
+                        c++;
+                        builder.append(participant.getName());
+                        if (c < upcomingStream.getParticipants().length) builder.append(", ");
+                    }
+                }
+                builder.append("\n\n");
+                Button button = Button.link(upcomingStream.getLink(), upcomingStream.getChannel().getName()+"'s live");
+                if (!upcomingStream.getChannel().getEmoji().equals("")) button = button.withEmoji(Emoji.fromUnicode(upcomingStream.getChannel().getEmoji()));
+                components.add(button);
+            }
+            if (builder.length() == 0) builder.append(":x: No live scheduled");
+            embedBuilder.setFooter(String.format("Page %s/%s", n+1, Math.ceil(total/5.)));
+            MessageAction messageAction = event.getMessage().editMessageEmbeds(embedBuilder.build());
+            Set<ActionRow> actionRows = new HashSet<>();
+            actionRows.add(ActionRow.of(Button.primary("page_previous_"+route, "Previous page"), Button.primary("page_next_"+route, "Next Page").withDisabled(n>=Math.ceil(total/5.))));
+            if (components.size() > 0) actionRows.add(ActionRow.of(components));
+            messageAction.setActionRows(actionRows).queue();
         }
+    }
+
+    public static @NotNull MessageEmbed buildLoadingEmbed() {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setColor(Color.BLUE);
+        embedBuilder.setDescription("<a:loading:906914357470961665> Loading...");
+        return embedBuilder.build();
     }
 }
