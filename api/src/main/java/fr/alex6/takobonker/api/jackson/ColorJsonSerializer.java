@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alex6.takobonker.bot.jackson;
+package fr.alex6.takobonker.api.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

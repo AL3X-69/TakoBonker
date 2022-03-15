@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package fr.alex6.takobonker.bot.jackson;
+package fr.alex6.takobonker.api.utils;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import fr.alex6.takobonker.api.jackson.ColorJsonDeserializer;
+import fr.alex6.takobonker.api.jackson.ColorJsonSerializer;
 
 import java.awt.*;
-import java.io.IOException;
 
-public class ColorJsonDeserializer extends JsonDeserializer<Color> {
-
-    @Override
-    public Color deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        return new Color(p.getValueAsInt());
+public class Commons {
+    public static SimpleModule getTakoModule() {
+        SimpleModule takoModule = new SimpleModule();
+        takoModule.addSerializer(new ColorJsonSerializer());
+        takoModule.addDeserializer(Color.class, new ColorJsonDeserializer());
+        return takoModule;
     }
 }

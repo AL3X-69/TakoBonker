@@ -17,12 +17,10 @@
 package fr.alex6.takobonker.bot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fr.alex6.takobonker.api.utils.CacheManager;
+import fr.alex6.takobonker.api.utils.Commons;
 import fr.alex6.takobonker.bot.commands.ScheduleCommands;
-import fr.alex6.takobonker.bot.jackson.ColorJsonDeserializer;
-import fr.alex6.takobonker.bot.jackson.ColorJsonSerializer;
-import fr.alex6.takobonker.bot.utils.CacheManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -30,16 +28,13 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
-import java.awt.*;
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws LoginException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        SimpleModule takoModule = new SimpleModule();
-        takoModule.addSerializer(new ColorJsonSerializer());
-        takoModule.addDeserializer(Color.class, new ColorJsonDeserializer());
-        objectMapper.registerModules(takoModule, new JavaTimeModule());
+
+        objectMapper.registerModules(Commons.getTakoModule(), new JavaTimeModule());
         CacheManager cacheManager = new CacheManager(objectMapper);
         JDA jda = JDABuilder.create(System.getProperty("bot.token"), GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS)).addEventListeners(new ScheduleCommands(cacheManager)).build();
         jda.updateCommands().addCommands(

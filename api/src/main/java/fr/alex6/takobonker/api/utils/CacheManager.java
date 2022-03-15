@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alex6.takobonker.bot.utils;
+package fr.alex6.takobonker.api.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

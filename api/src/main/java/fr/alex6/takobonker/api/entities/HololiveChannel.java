@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alex6.takobonker.bot;
+package fr.alex6.takobonker.api.entities;
 
 import java.awt.*;
 
