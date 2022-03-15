@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package fr.alex6.discord.takobonker.commands;
+package fr.alex6.takobonker.bot.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helger.css.ECSSVersion;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSDeclarationList;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.reader.CSSReaderDeclarationList;
-import fr.alex6.discord.takobonker.HololiveChannel;
-import fr.alex6.discord.takobonker.commands.entities.UpcomingStream;
-import fr.alex6.discord.takobonker.http.HttpFactory;
-import fr.alex6.discord.takobonker.utils.CacheManager;
-import fr.alex6.discord.takobonker.utils.CachedResource;
+import fr.alex6.takobonker.bot.HololiveChannel;
+import fr.alex6.takobonker.bot.commands.entities.UpcomingStream;
+import fr.alex6.takobonker.bot.http.HttpFactory;
+import fr.alex6.takobonker.bot.utils.CacheManager;
+import fr.alex6.takobonker.bot.utils.CachedResource;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
@@ -49,14 +50,12 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class ScheduleCommands extends ListenerAdapter {
     private static final DateTimeFormatter HOLODULE_DATE_FORMAT = new DateTimeFormatterBuilder()
@@ -66,30 +65,20 @@ public class ScheduleCommands extends ListenerAdapter {
     private static final DateTimeFormatter HOLODULE_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     private static final Logger logger = LoggerFactory.getLogger(ScheduleCommands.class);
 
-    private final List<HololiveChannel> channels = new ArrayList<>();
+    private final HololiveChannel[] channels;
     private final CacheManager cacheManager;
 
-    public ScheduleCommands(CacheManager cacheManager) {
+    public ScheduleCommands(@NotNull CacheManager cacheManager) throws IOException {
         this.cacheManager = cacheManager;
-
-        for (Field field : HololiveChannel.class.getDeclaredFields()) {
-            int mod = field.getModifiers();
-            if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod) && field.getType() == HololiveChannel.class) {
-                try {
-                    HololiveChannel channel = (HololiveChannel) field.get(null);
-                    channels.add(channel);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        ObjectMapper mapper = cacheManager.getObjectMapper();
+        this.channels = mapper.readValue(getClass().getClassLoader().getResource("channels.json"), HololiveChannel[].class);
     }
 
     private String buildYoutubeUrl(String endpoint, String ids) {
         return String.format("/%s?key=%s&part=snippet&id=%s", endpoint, System.getProperty("youtube.key"), ids);
     }
 
-    private List<UpcomingStream> getUpcomingStreams(String route) throws IOException {
+    private @NotNull List<UpcomingStream> getUpcomingStreams(@NotNull String route) throws IOException {
         String cacheName = route.equals("") ? "up-all" : "up-" + route.substring(1);
         CachedResource<UpcomingStream[]> cachedResource = cacheManager.getCachedResource(cacheName, UpcomingStream[].class);
         if (cachedResource == null || Duration.between(cachedResource.getCacheDateTime(), LocalDateTime.now()).getSeconds() > 300) {
@@ -247,7 +236,7 @@ public class ScheduleCommands extends ListenerAdapter {
             if (footerText == null) return;
             int n = Integer.parseInt(footerText.split("/")[0].replace("Page ", ""));
             String route = event.getComponentId().replace("page_previous_", "");
-            event.editMessageEmbeds(buildLoadingEmbed()).queue();
+            event.editMessageEmbeds(buildLoadingEmbed()).complete();
 
             List<UpcomingStream> upcomingStreams;
             try {
@@ -299,7 +288,7 @@ public class ScheduleCommands extends ListenerAdapter {
             if (footerText == null) return;
             int n = Integer.parseInt(footerText.split("/")[0].replace("Page ", ""));
             String route = event.getComponentId().replace("page_next_", "");
-            event.editMessageEmbeds(buildLoadingEmbed()).queue();
+            event.editMessageEmbeds(buildLoadingEmbed()).complete();
 
             List<UpcomingStream> upcomingStreams;
             try {
@@ -343,6 +332,7 @@ public class ScheduleCommands extends ListenerAdapter {
             embedBuilder.setFooter(String.format("Page %s/%s", n+1, Math.ceil(total/5.)));
             MessageAction messageAction = event.getMessage().editMessageEmbeds(embedBuilder.build());
             Set<ActionRow> actionRows = new HashSet<>();
+            logger.debug(String.valueOf(n));
             actionRows.add(ActionRow.of(Button.primary("page_previous_"+route, "Previous page"), Button.primary("page_next_"+route, "Next Page").withDisabled(n>=Math.ceil(total/5.))));
             if (components.size() > 0) actionRows.add(ActionRow.of(components));
             messageAction.setActionRows(actionRows).queue();

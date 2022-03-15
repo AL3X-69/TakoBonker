@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alex6
+ * Copyright 2022 Alex6
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package fr.alex6.discord.takobonker.jackson;
+package fr.alex6.takobonker.bot.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import fr.alex6.discord.takobonker.HololiveChannel;
 
+import java.awt.*;
 import java.io.IOException;
 
-public class HololiveChannelJsonDeserializer extends JsonDeserializer<HololiveChannel> {
+public class ColorJsonDeserializer extends JsonDeserializer<Color> {
+
     @Override
-    public HololiveChannel deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        try {
-            return HololiveChannel.fromId(jsonParser.getValueAsString());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Color deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        return new Color(p.getValueAsInt());
     }
 }

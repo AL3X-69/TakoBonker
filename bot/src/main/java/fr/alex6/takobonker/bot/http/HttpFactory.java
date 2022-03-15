@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alex6
+ * Copyright 2022 Alex6
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alex6.discord.takobonker.http;
+package fr.alex6.takobonker.bot.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

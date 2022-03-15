@@ -1,0 +1,436 @@
+[
+  {
+    "name": "Ninomae Ina'nis",
+    "id": "UCMwGHR0BTZuLsmjY_NT5Pwg",
+    "emoji": "\uD83D\uDC19",
+    "twitter": "",
+    "color": -10332546
+  },
+  {
+    "name": "Gawr Gura",
+    "id": "UCoSrY_IQQVpmIRZ9Xf-y93g",
+    "emoji": "\uD83D\uDD31",
+    "twitter": "",
+    "color": -10649145
+  },
+  {
+    "name": "Mori Calliope",
+    "id": "UCL_qhgtOy0dy1Agp8vkySQg",
+    "emoji": "\uD83D\uDC80",
+    "twitter": "",
+    "color": -3601088
+  },
+  {
+    "name": "Watson Amelia",
+    "id": "UCyl1z3jo3XHR1riLFKG5UAg",
+    "emoji": "\uD83D\uDD0E",
+    "twitter": "",
+    "color": -468078
+  },
+  {
+    "name": "Takanashi Kiara",
+    "id": "UCHsx4Hqa-1ORjQTh9TYDhww",
+    "emoji": "\uD83D\uDC14",
+    "twitter": "",
+    "color": -44772
+  },
+  {
+    "name": "IRyS",
+    "id": "UC8rcEBzJSleTkf_-agPM20g",
+    "emoji": "\uD83D\uDC8E",
+    "twitter": "",
+    "color": -7597514
+  },
+  {
+    "name": "Nanashi Mumei",
+    "id": "UC3n5uGu18FoCy23ggWWp8tA",
+    "emoji": "\uD83E\uDEB6",
+    "twitter": "",
+    "color": -4612976
+  },
+  {
+    "name": "Hakos Baelz",
+    "id": "UCgmPnx-EEeOrZSg5Tiw7ZRQ",
+    "emoji": "\uD83C\uDFB2",
+    "twitter": "",
+    "color": -2677481
+  },
+  {
+    "name": "Ceres Fauna",
+    "id": "UCO_aKKYxn4tvrqPjcTzZ6EQ",
+    "emoji": "\uD83C\uDF3F",
+    "twitter": "",
+    "color": -5385832
+  },
+  {
+    "name": "Ouro Kronii",
+    "id": "UCmbs8T6MWqUHP1tIQvSgKrg",
+    "emoji": "⏳",
+    "twitter": "",
+    "color": -14667381
+  },
+  {
+    "name": "Tsukumo Sana",
+    "id": "UCsUj0dszADCGbF3gNrQEuSQ",
+    "emoji": "\uD83E\uDE90",
+    "twitter": "",
+    "color": -2182606
+  },
+  {
+    "name": "Tokino Sora",
+    "id": "UCp6993wxpyDPHUpavwDFqgg",
+    "emoji": "🐻",
+    "twitter": "",
+    "color": -14259457
+  },
+  {
+    "name": "Roboco",
+    "id": "🤖",
+    "emoji": "UCDqI2jOz0weumE8s7paEk6g",
+    "twitter": "",
+    "color": -3042562
+  },
+  {
+    "name": "Sakura Miko",
+    "id": "UC-hM6YJuNYVAmUWxeIr9FeA",
+    "emoji": "🌸",
+    "twitter": "",
+    "color": -28705
+  },
+  {
+    "name": "Hoshimachi Suisei",
+    "id": "UC5CwaMl1eIgY8h02uZw7u8A",
+    "emoji": "🌠",
+    "twitter": "",
+    "color": -11935500
+  },
+  {
+    "name": "AZKi",
+    "id": "UC0TXe_LYZ4scaW2XMyi5_kw",
+    "emoji": "⚒",
+    "twitter": "",
+    "color": -248696
+  },
+  {
+    "name": "Yozora Mel",
+    "id": "UCD8HOxPs4Xvsm8H0ZxXGiBw",
+    "emoji": "🌟",
+    "twitter": "",
+    "color": -76246
+  },
+  {
+    "name": "Shirakami Fubuki",
+    "id": "UCdn5BQ06XqgXoAxIhbqw5Rg",
+    "emoji": "🌽",
+    "twitter": "",
+    "color": -12337169
+  },
+  {
+    "name": "Natsuiro Matsuri",
+    "id": "UCQ0UDLQCjY0rmuxCDE38FGg",
+    "emoji": "🏮",
+    "twitter": "",
+    "color": -152763
+  },
+  {
+    "name": "Aki Rosenthal",
+    "id": "UCFTLzh12_nrtzqBPsTCqenA",
+    "emoji": "🍎",
+    "twitter": "",
+    "color": -11632644
+  },
+  {
+    "name": "Akai Haato",
+    "id": "UC1CfXB_kRs3C-zaeTG3oGyg",
+    "emoji": "❤️\u200D\uD83D\uDD25",
+    "twitter": "",
+    "color": -112526
+  },
+  {
+    "name": "Minato Aqua",
+    "id": "UC1opHUrw8rvnsadT-iGp7Cg",
+    "emoji": "⚓",
+    "twitter": "",
+    "color": -1737507
+  },
+  {
+    "name": "Murasaki Shion",
+    "id": "UCXTpFs_3PqI41qX2d9tL2Rw",
+    "emoji": "",
+    "twitter": "",
+    "color": -8100098
+  },
+  {
+    "name": "Nakiri Ayame",
+    "id": "UC7fk0CB07ly8oSl0aqKkqFg",
+    "emoji": "",
+    "twitter": "",
+    "color": -2212312
+  },
+  {
+    "name": "Yuzuki Choco",
+    "id": "UC1suqwovbL1kzsoaZgFZLKg",
+    "emoji": "",
+    "twitter": "",
+    "color": -101474
+  },
+  {
+    "name": "Oozora Subaru",
+    "id": "UCvzGlP9oQwU--Y0r9id_jnA",
+    "emoji": "",
+    "twitter": "",
+    "color": -1705113
+  },
+  {
+    "name": "Ookami Mio",
+    "id": "UCp-5t9SrOQwXMU7iIjQfARg",
+    "emoji": "",
+    "twitter": "",
+    "color": -3727810
+  },
+  {
+    "name": "Nekomata Okayu",
+    "id": "UCvaTdHTWBGv3MKj3KVqJVCw",
+    "emoji": "\uD83C\uDF59",
+    "twitter": "",
+    "color": -5140228
+  },
+  {
+    "name": "Inugami Korone",
+    "id": "UChAnqc_AY5_I3Px5dig3X1Q",
+    "emoji": "",
+    "twitter": "",
+    "color": -73671
+  },
+  {
+    "name": "Usada Pekora",
+    "id": "UC1DCedRgGHBdm81E1llLhOQ",
+    "emoji": "",
+    "twitter": "",
+    "color": -8469762
+  },
+  {
+    "name": "Uruha Rushia",
+    "id": "UCl_gCybOJRIgOXw6Qb4qJzQ",
+    "emoji": "\uD83E\uDD8B",
+    "twitter": "",
+    "color": -15079223
+  },
+  {
+    "name": "Shiranui Flare",
+    "id": "UCvInZx9h3jC2JzsIzoOebWg",
+    "emoji": "",
+    "twitter": "",
+    "color": -115428
+  },
+  {
+    "name": "Shirogane Noel",
+    "id": "UCdyqAaZDKHXg4Ahi7VENThQ",
+    "emoji": "",
+    "twitter": "",
+    "color": -5456443
+  },
+  {
+    "name": "Houshou Marine",
+    "id": "UCCzUftO8KOVkV4wQG1vkUvg",
+    "emoji": "",
+    "twitter": "",
+    "color": -4576213
+  },
+  {
+    "name": "Amane Kanata",
+    "id": "UCZlDXzGoo7d44bwdNObFacg",
+    "emoji": "",
+    "twitter": "",
+    "color": -11494422
+  },
+  {
+    "name": "Tsunokami Watame",
+    "id": "UCqm3BQLlJfvkTsX_hvm0UmA",
+    "emoji": "\uD83D\uDC11",
+    "twitter": "",
+    "color": -413774
+  },
+  {
+    "name": "Tokoyami Towa",
+    "id": "UC1uv2Oq6kNxgATlCiez59hw",
+    "emoji": "",
+    "twitter": "",
+    "color": -4549942
+  },
+  {
+    "name": "Himemori Luna",
+    "id": "UCa9Y57gfeY0Zro_noHRVrnw",
+    "emoji": "",
+    "twitter": "",
+    "color": -545835
+  },
+  {
+    "name": "Yukihana Lami",
+    "id": "UCFKOVgVbGmX65RxO3EtH3iw",
+    "emoji": "",
+    "twitter": "",
+    "color": -9782561
+  },
+  {
+    "name": "Momosuzu Nene",
+    "id": "UCAWSyEs_Io8MtpY3m-zqILA",
+    "emoji": "",
+    "twitter": "",
+    "color": -1135522
+  },
+  {
+    "name": "Shishiro Botan",
+    "id": "UCUKD-uaobj9jiqB-VXt71mA",
+    "emoji": "",
+    "twitter": "",
+    "color": -6105660
+  },
+  {
+    "name": "Omaru Polka",
+    "id": "UCK9V2B22uJYu3N7eR_BT9QA",
+    "emoji": "",
+    "twitter": "",
+    "color": -4643023
+  },
+  {
+    "name": "La+ Darkness",
+    "id": "UCENwRMx5Yh42zWpzURebzTw",
+    "emoji": "",
+    "twitter": "",
+    "color": -13296069
+  },
+  {
+    "name": "Takane Lui",
+    "id": "UCs9_O1tRPMQTHQ-N_L6FU2g",
+    "emoji": "",
+    "twitter": "",
+    "color": -4699545
+  },
+  {
+    "name": "Hakui_Koyori",
+    "id": "UC6eWCld0KwmyHFbAqK3V-Rw",
+    "emoji": "",
+    "twitter": "",
+    "color": -1008448
+  },
+  {
+    "name": "Sakamata Chloe",
+    "id": "UCIBY1ollUsauvVi4hW4cumw",
+    "emoji": "",
+    "twitter": "",
+    "color": -7202277
+  },
+  {
+    "name": "Kazama Iroha",
+    "id": "UC_vMYWcDjmfdpH6r4TTn1MQ",
+    "emoji": "",
+    "twitter": "",
+    "color": -9194063
+  },
+  {
+    "name": "Hanasaki Miyabi",
+    "id": "UC6t3-_N8A6ME1JShZHHqOMw",
+    "emoji": "",
+    "twitter": "",
+    "color": -53441
+  },
+  {
+    "name": "Kanade Izuru",
+    "id": "UCZgOv3YDEs-ZnZWDYVwJdmA",
+    "emoji": "",
+    "twitter": "",
+    "color": -14733425
+  },
+  {
+    "name": "Arurandeisu",
+    "id": "UCKeAhJvy8zgXWbh9duVjIaQ",
+    "emoji": "",
+    "twitter": "",
+    "color": -13668529
+  },
+  {
+    "name": "Rikkaroid",
+    "id": "UC9mf_ZVpouoILRY9NUIaK-w",
+    "emoji": "",
+    "twitter": "",
+    "color": -18465
+  },
+  {
+    "name": "Astel Leda",
+    "id": "UCNVEsYbiZjH5QLmGeSgTSzg",
+    "emoji": "",
+    "twitter": "",
+    "color": -16758869
+  },
+  {
+    "name": "Kishido Tema",
+    "id": "UCGNI4MENvnsymYjKiZwv9eg",
+    "emoji": "",
+    "twitter": "",
+    "color": -9982
+  },
+  {
+    "name": "Yukoku Roberu",
+    "id": "UCANDOlYTJT7N5jlRC3zfzVA",
+    "emoji": "\uD83C\uDF77",
+    "twitter": "",
+    "color": -3515904
+  },
+  {
+    "name": "Kageyama Shien",
+    "id": "UChSvpZYRPh0FvG4SJGSga3g",
+    "emoji": "",
+    "twitter": "",
+    "color": -4947504
+  },
+  {
+    "name": "Aragami Oga",
+    "id": "UCwL7dgTxKo8Y4RFIKWaf8gA",
+    "emoji": "",
+    "twitter": "",
+    "color": -2690981
+  },
+  {
+    "name": "Ayunda Risu",
+    "id": "UCOyYb1c43VlX9rc_lT6NKQw",
+    "emoji": "",
+    "twitter": "",
+    "color": -48845
+  },
+  {
+    "name": "Moona Hoshinova",
+    "id": "UCP0BspO_AMEe3aQqqpo89Dg",
+    "emoji": "",
+    "twitter": "",
+    "color": -7786753
+  },
+  {
+    "name": "Airani Lofifteen",
+    "id": "UCAoy6rzhSf4ydcYjJw3WoVg",
+    "emoji": "",
+    "twitter": "",
+    "color": -47659
+  },
+  {
+    "name": "Kureiji Ollie",
+    "id": "UCYz_5n-uDuChHtLo7My1HnQ",
+    "emoji": "",
+    "twitter": "",
+    "color": -2748844
+  },
+  {
+    "name": "Anya Melfissa",
+    "id": "UC727SQYUvx5pDDGQpTICNWg",
+    "emoji": "",
+    "twitter": "",
+    "color": -865956
+  },
+  {
+    "name": "Paviolia Reine",
+    "id": "UChgTyjG-pdNvxxhdsXfHQ5Q",
+    "emoji": "",
+    "twitter": "",
+    "color": -15772998
+  }
+]

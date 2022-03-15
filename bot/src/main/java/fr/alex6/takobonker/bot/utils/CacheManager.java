@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alex6.discord.takobonker.utils;
+package fr.alex6.takobonker.bot.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,5 +65,9 @@ public class CacheManager {
         } else {
             return null;
         }
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 }

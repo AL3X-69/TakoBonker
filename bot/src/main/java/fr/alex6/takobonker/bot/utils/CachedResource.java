@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alex6.discord.takobonker.utils;
+package fr.alex6.takobonker.bot.utils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

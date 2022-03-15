@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-package fr.alex6.discord.takobonker.jackson;
+package fr.alex6.takobonker.bot.jackson;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.awt.*;
 import java.io.IOException;
 
-public class ColorJsonDeserializer extends JsonDeserializer<Color> {
+public class ColorJsonSerializer extends JsonSerializer<Color> {
+    @Override
+    public void serialize(Color value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (value == null) {
+            gen.writeNull();
+            return;
+        }
+        gen.writeNumber(value.getRGB());
+    }
 
     @Override
-    public Color deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        return new Color(p.getValueAsInt());
+    public Class<Color> handledType() {
+        return Color.class;
     }
 }
