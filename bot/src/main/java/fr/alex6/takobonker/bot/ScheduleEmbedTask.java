@@ -16,7 +16,7 @@
 
 package fr.alex6.takobonker.bot;
 
-import fr.alex6.takobonker.bot.http.HttpFactory;
+import fr.alex6.takobonker.api.http.HttpFactory;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;

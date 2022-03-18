@@ -23,6 +23,8 @@ import fr.alex6.takobonker.api.jackson.ColorJsonSerializer;
 import java.awt.*;
 
 public class Commons {
+    public static final Color HOLOLIVE_COLOR = Color.decode("#5fddef");
+
     public static SimpleModule getTakoModule() {
         SimpleModule takoModule = new SimpleModule();
         takoModule.addSerializer(new ColorJsonSerializer());

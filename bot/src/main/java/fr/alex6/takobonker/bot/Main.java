@@ -18,8 +18,10 @@ package fr.alex6.takobonker.bot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fr.alex6.takobonker.api.http.HololiveSchedule;
 import fr.alex6.takobonker.api.utils.CacheManager;
 import fr.alex6.takobonker.api.utils.Commons;
+import fr.alex6.takobonker.bot.commands.InfoCommand;
 import fr.alex6.takobonker.bot.commands.ScheduleCommands;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -33,10 +35,13 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws LoginException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-
         objectMapper.registerModules(Commons.getTakoModule(), new JavaTimeModule());
         CacheManager cacheManager = new CacheManager(objectMapper);
-        JDA jda = JDABuilder.create(System.getProperty("bot.token"), GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS)).addEventListeners(new ScheduleCommands(cacheManager)).build();
+
+        HololiveSchedule schedule = new HololiveSchedule(cacheManager);
+
+        JDA jda = JDABuilder.create(System.getProperty("bot.token"), GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS)).addEventListeners(new ScheduleCommands(schedule), new InfoCommand(schedule)).build();
+
         jda.updateCommands().addCommands(
                 Commands.slash("upcoming", "Get Upcoming Streams")
                         .addOption(OptionType.STRING, "route", "Specify a filter, available filters: english, indonesia, holostars, hololive", false),

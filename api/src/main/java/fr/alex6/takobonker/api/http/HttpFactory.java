@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alex6.takobonker.bot.http;
+package fr.alex6.takobonker.api.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,12 +42,13 @@ import java.util.List;
 public class HttpFactory {
     public static final HttpFactory SCHEDULE_HOLOLIVE_TV = new HttpFactory("https://schedule.hololive.tv");
     public static final HttpFactory YOUTUBE_DATA_API_V3 = new HttpFactory("https://www.googleapis.com/youtube/v3");
+    public static final HttpFactory TWITTER_API = new HttpFactory("");
 
     private final String baseUrl;
     private final HttpClient client;
     private final ObjectMapper objectMapper;
 
-    private HttpFactory(String baseUrl) {
+    public HttpFactory(String baseUrl) {
         this.baseUrl = baseUrl;
         List<Header> headers = Collections.singletonList(new BasicHeader(HttpHeaders.USER_AGENT, "TakoBonker (1.0.0)"));
         this.client = HttpClientBuilder.create().setDefaultHeaders(headers).build();

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package fr.alex6.takobonker.bot.commands.entities;
+package fr.alex6.takobonker.api.entities;
 
-import fr.alex6.takobonker.bot.HololiveChannel;
+
+import fr.alex6.takobonker.api.entities.HololiveChannel;
 
 import java.awt.*;
 import java.time.LocalDateTime;
