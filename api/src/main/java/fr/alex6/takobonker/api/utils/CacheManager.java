@@ -19,15 +19,18 @@ package fr.alex6.takobonker.api.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-public class CacheManager {
+public class CacheManager implements Closeable {
     private final File cacheFolder;
     private final ObjectMapper objectMapper;
+    private boolean closed = false;
 
     public CacheManager(ObjectMapper objectMapper) {
         this.cacheFolder = new File("cache");
@@ -43,7 +46,8 @@ public class CacheManager {
         this.objectMapper = objectMapper;
     }
 
-    public void cacheResource(String name, Object resource) throws IOException {
+    public void cacheResource(String name, @NotNull Object resource) throws IOException {
+        if (closed) throw new IllegalStateException("Instance is closed");
         if (objectMapper.canSerialize(resource.getClass())) {
             ObjectNode objectNode = objectMapper.createObjectNode();
             objectNode.put("time", LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
@@ -58,6 +62,7 @@ public class CacheManager {
     }
 
     public <T> CachedResource<T> getCachedResource(String name, Class<T> cachedClass) throws IOException {
+        if (closed) throw new IllegalStateException("Instance is closed");
         File cacheFile = new File(cacheFolder.getAbsolutePath()+"/"+name+".json");
         if (cacheFile.exists()) {
             JsonNode jsonNode = objectMapper.readTree(cacheFile);
@@ -69,5 +74,11 @@ public class CacheManager {
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    @Override
+    public void close() {
+        closed = true;
+        cacheFolder.deleteOnExit();
     }
 }

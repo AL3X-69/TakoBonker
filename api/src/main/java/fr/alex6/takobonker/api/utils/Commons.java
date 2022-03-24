@@ -19,13 +19,14 @@ package fr.alex6.takobonker.api.utils;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import fr.alex6.takobonker.api.jackson.ColorJsonDeserializer;
 import fr.alex6.takobonker.api.jackson.ColorJsonSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 public class Commons {
     public static final Color HOLOLIVE_COLOR = Color.decode("#5fddef");
 
-    public static SimpleModule getTakoModule() {
+    public static @NotNull SimpleModule getTakoModule() {
         SimpleModule takoModule = new SimpleModule();
         takoModule.addSerializer(new ColorJsonSerializer());
         takoModule.addDeserializer(Color.class, new ColorJsonDeserializer());

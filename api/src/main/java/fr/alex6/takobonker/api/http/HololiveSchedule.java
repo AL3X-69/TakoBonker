@@ -140,6 +140,10 @@ public class HololiveSchedule {
         return String.format("/%s?key=%s&part=snippet&id=%s", endpoint, System.getProperty("youtube.key"), ids);
     }
 
+    public HololiveChannel[] getChannels() {
+        return channels;
+    }
+
     public @Nullable HololiveChannel getChannelByColor(Color color) {
         for (HololiveChannel channel : channels) {
             if (channel.getColor().equals(color)) {

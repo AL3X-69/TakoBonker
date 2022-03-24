@@ -46,8 +46,8 @@ public class WikiUtils {
         String[] links = StringUtils.substringsBetween(text, " [", "] ");
         if (links != null) {
             for (String link : links) {
-                String[] parts = link.split(" ", 1);
-                text = text.substring(0, text.indexOf(link))+String.format("[%s](%s)", parts[1], parts[0])+text.substring(text.indexOf(link)+link.length());
+                String[] parts = link.split(" ", 2);
+                text = text.substring(0, text.indexOf(link)-1)+String.format("[%s](%s)", parts[1], parts[0])+text.substring(text.indexOf(link)+link.length()+1);
             }
         }
         return text
